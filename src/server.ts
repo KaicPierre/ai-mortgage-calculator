@@ -1,4 +1,12 @@
+import 'reflect-metadata'
+import './shared/dependencyInjection'
+
 import Fastify from 'fastify';
+import 'dotenv/config';
+
+import { mortgageCalculatorRoutes } from './routes'
+import { env } from '@env/index';
+ 
 const fastify = Fastify({
   logger: {
     transport: {
@@ -11,13 +19,11 @@ const fastify = Fastify({
   },
 });
 
-fastify.get('/', async function handler(request, reply) {
-  return { hello: 'world' };
-});
 
 const start = async () => {
   try {
-    await fastify.listen({ host: '0.0.0.0', port: 3000 });
+    fastify.register(mortgageCalculatorRoutes)
+    await fastify.listen({ host: '0.0.0.0', port: env.APP_PORT });
   } catch (err) {
     fastify.log.error(err);
     process.exit(1);
