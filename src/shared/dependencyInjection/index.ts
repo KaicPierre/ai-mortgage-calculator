@@ -1,6 +1,6 @@
 import { container } from 'tsyringe';
 
-import { IGenAiRepository } from '@repositories/interfaces';
 import { GenAiRepository } from '@repositories/GenAiRepository';
+import { IGenAiRepository } from '@repositories/interfaces';
 
 container.registerSingleton<IGenAiRepository>('GenAiRepository', GenAiRepository);

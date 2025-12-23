@@ -1,9 +1,9 @@
-import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
-import {ChatController} from '@useCases/chatUseCase/chatController'
+import type { FastifyInstance } from 'fastify';
 
-const chatController = new ChatController()
+import { ChatController } from '@useCases/chatUseCase/chatController';
 
+const chatController = new ChatController();
 
 export async function mortgageCalculatorRoutes(app: FastifyInstance) {
-  app.post('/chat', chatController.handle)
+  app.post('/chat', chatController.handle);
 }

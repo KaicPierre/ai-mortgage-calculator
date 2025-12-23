@@ -1,5 +1,6 @@
-import { genkit } from "genkit/beta";
-import { googleAI } from "@genkit-ai/google-genai";
+import { genkit } from 'genkit/beta';
+
+import { googleAI } from '@genkit-ai/google-genai';
 
 // Shared AI instance for the entire application
 export const ai = genkit({

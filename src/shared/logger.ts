@@ -9,8 +9,8 @@ export const logger = pino({
       ignore: 'pid,hostname',
       singleLine: false,
       levelFirst: true,
-      messageFormat: '{msg}'
-    }
+      messageFormat: '{msg}',
+    },
   },
   level: process.env.LOG_LEVEL || 'info',
   base: undefined, // Remove default fields
