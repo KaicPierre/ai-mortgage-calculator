@@ -3,6 +3,7 @@ import './shared/dependencyInjection'
 
 import Fastify from 'fastify';
 import 'dotenv/config';
+import cors from '@fastify/cors';
 
 import { mortgageCalculatorRoutes } from './routes'
 import { env } from '@env/index';
@@ -16,7 +17,6 @@ const fastify = Fastify({
 });
 
 
-
 const start = async () => {
   try {
     logger.info({ 
@@ -25,6 +25,11 @@ const start = async () => {
       host: '0.0.0.0'
     }, 'Starting application');
     
+    
+    fastify.register(cors, {
+        origin: "*",
+        exposedHeaders: ["x-session-id"]
+      });
     fastify.register(mortgageCalculatorRoutes);
     
      fastify.setErrorHandler((error, request, reply) => {

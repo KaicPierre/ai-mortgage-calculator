@@ -19,15 +19,23 @@ export class GenAiRepository implements IGenAiRepository {
         message: cropText(message) 
       }, 'Generating AI response');
       
-      const response = await ai.generate({
-         prompt: `
-         You are a mortgage assistant that help users in a web chatbot to get their mortgage simulations done and explain everything about the mortgage process in the U.S.
-         
-         Here is the conversation so far: ${JSON.stringify(session?.messages)}
+      const prompt = `
+          You are a mortgage assistant that help users in a web chatbot to get their mortgage simulations done and explain everything about the mortgage process in the U.S.
+          
+          Here is the conversation so far, use this to understand what the user input really means, this is a full conversation not only a QnA.
+        
+          START OF THE PREVIOUS CONVERSATION 
+          ${JSON.stringify(session?.messages)}
+          END OF THE PREVIOUS CONVERSATION 
 
-         Here is the last user input: ${message}
-         `,
-         tools: [mortgageCalculator],
+          Here is the last user input: ${message}
+        `
+
+      console.log(prompt)
+
+      const response = await ai.generate({
+        prompt,
+        tools: [mortgageCalculator],
       });
 
       if (!response?.message?.content?.[0]?.text) {

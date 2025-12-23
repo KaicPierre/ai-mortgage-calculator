@@ -3,7 +3,7 @@ import { z } from 'zod';
 import 'dotenv/config';
 
 const envSchema = z.object({
-  APP_PORT: z.coerce.number().default(3000),
+  APP_PORT: z.coerce.number().default(5000),
   GEMINI_API_KEY: z.string(),
 });
 
