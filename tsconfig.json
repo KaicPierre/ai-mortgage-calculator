@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "commonjs",
+    "baseUrl": "src",
+    "paths": {
+        "@middlewares/*": ["middlewares/*"],
+        "@useCases/*": ["useCases/*"],
+        "@repositories/*": ["repositories/*"],
+        "@shared/*": ["shared/*"],
+        "@routes/*": ["routes/*"],
+        "@env/*": ["env/*"],
+        "@utils/*": ["utils/*"],
+        "@models/*": ["models/*"]
+    },
+    "typeRoots": [
+        "src/types",
+        "./node_modules/@types"
+    ],
+    "outDir": "./build",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "strict": true,
+    "allowJs": true,
+    "skipLibCheck": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true  
+  }
+}
