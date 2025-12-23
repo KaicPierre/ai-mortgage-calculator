@@ -14,6 +14,7 @@ export class ChatController {
     const useCase = container.resolve(ChatUseCase);
     const result = await useCase.execute(message, sessionId)
 
-    reply.send(result)
+    reply.header('x-session-id', result.sessionId)
+    reply.send(result.response)
   }
 }
