@@ -2,13 +2,23 @@ import type { IGenAiRepository, ISession } from "./interfaces";
 import { ai } from "@shared/ai-instance";
 import { mortgageCalculator } from './tools/mortgageCalculator.tool'
 import { AIGenerationError, RepositoryError } from "@shared/errors";
+import { logger, cropText } from "@shared/logger";
 
 export class GenAiRepository implements IGenAiRepository {
 
   private session: ISession[] = []
 
   async invoke(message: string, session?: ISession): Promise<any> {
+    const sessionId = session?.sessionId || 'new';
+    
     try {
+      logger.info({ 
+        layer: 'Repository',
+        method: 'invoke',
+        sessionId, 
+        message: cropText(message) 
+      }, 'Generating AI response');
+      
       const response = await ai.generate({
          prompt: `
          You are a mortgage assistant that help users in a web chatbot to get their mortgage simulations done and explain everything about the mortgage process in the U.S.
@@ -24,8 +34,24 @@ export class GenAiRepository implements IGenAiRepository {
         throw new AIGenerationError('No response generated from AI');
       }
 
-      return response.message.content[0].text;
+      const result = response.message.content[0].text;
+      
+      logger.info({ 
+        layer: 'Repository',
+        method: 'invoke',
+        sessionId, 
+        response: cropText(result) 
+      }, 'AI response generated successfully');
+      
+      return result;
     } catch (error) {
+      logger.error({ 
+        layer: 'Repository',
+        method: 'invoke',
+        sessionId, 
+        error: error instanceof Error ? error.message : String(error) 
+      }, 'Failed to generate AI response');
+      
       if (error instanceof AIGenerationError || error instanceof RepositoryError) {
         throw error;
       }
@@ -36,21 +62,60 @@ export class GenAiRepository implements IGenAiRepository {
   }
 
    getHistory(sessionId: string): ISession | undefined{
-    if (!sessionId || sessionId.trim().length === 0) {
-      throw new RepositoryError('Session ID cannot be empty', 400);
-    }
+    try {
+      if (!sessionId || sessionId.trim().length === 0) {
+        throw new RepositoryError('Session ID cannot be empty', 400);
+      }
 
-    const history = this.session.find(s => s.sessionId === sessionId)
-    return history
+      const history = this.session.find(s => s.sessionId === sessionId)
+      
+      logger.info({ 
+        layer: 'Repository',
+        method: 'getHistory',
+        sessionId, 
+        found: !!history, 
+        messagesCount: history?.messages.length || 0 
+      }, 'Session history retrieved');
+      
+      return history
+    } catch (error) {
+      logger.error({ 
+        layer: 'Repository',
+        method: 'getHistory',
+        sessionId, 
+        error: error instanceof Error ? error.message : String(error) 
+      }, 'Failed to retrieve session history');
+      throw error;
+    }
   }
 
   setHistory(newSession: ISession): void{
+    try {
       const index = this.session.findIndex(s => s.sessionId === newSession.sessionId)
+      const action = index === -1 ? 'created' : 'updated';
+      
       if(index === -1){ 
         this.session.push(newSession)
-        return
+      } else {
+        this.session[index].messages.push(...newSession.messages)
       }
-      this.session[index].messages.push(...newSession.messages)
-      return
+      
+      logger.info({ 
+        layer: 'Repository',
+        method: 'setHistory',
+        sessionId: newSession.sessionId, 
+        action,
+        messagesCount: newSession.messages.length,
+        totalMessages: index === -1 ? newSession.messages.length : this.session[index].messages.length
+      }, `Session ${action} successfully`);
+    } catch (error) {
+      logger.error({ 
+        layer: 'Repository',
+        method: 'setHistory',
+        sessionId: newSession.sessionId, 
+        error: error instanceof Error ? error.message : String(error) 
+      }, 'Failed to set session history');
+      throw error;
     }
+  }
 }
