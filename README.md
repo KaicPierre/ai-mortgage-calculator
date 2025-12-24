@@ -36,17 +36,17 @@ The application follows a **Clean Architecture** pattern with clear separation o
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                        Presentation Layer                        │
-│                     (Controllers / Routes)                       │
+│                        Presentation Layer                       │
+│                     (Controllers / Routes)                      │
 ├─────────────────────────────────────────────────────────────────┤
-│                        Application Layer                         │
-│                          (Use Cases)                             │
+│                        Application Layer                        │
+│                          (Use Cases)                            │
 ├─────────────────────────────────────────────────────────────────┤
-│                        Domain Layer                              │
-│                    (Repositories / Tools)                        │
+│                        Domain Layer                             │
+│                    (Repositories / Tools)                       │
 ├─────────────────────────────────────────────────────────────────┤
-│                       Infrastructure Layer                       │
-│              (AI Instance / External Services)                   │
+│                       Infrastructure Layer                      │
+│              (AI Instance / External Services)                  │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -123,8 +123,9 @@ GEMINI_MODEL=model_you_want
 |----------|----------|---------|-------------|
 | `APP_PORT` | No | `5000` | Port for the API server |
 | `GEMINI_API_KEY` | **Yes** | - | Google AI API key for Gemini model |
+| `GEMINI_MODEL` | No | gemini-2.5-flash | Gemini model that the agent will use |
 
-> **📌 Note:** You can obtain a free Gemini API key from [Google AI Studio](https://aistudio.google.com/app/apikey)
+> **📌 Note:** You can obtain a free Gemini API key and Model from [Google AI Studio](https://aistudio.google.com/app/apikey)
 
 ### Installation
 
