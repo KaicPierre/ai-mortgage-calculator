@@ -26,14 +26,36 @@ export const mortgageCalculator = ai.defineTool(
     outputSchema: z.object({
       monthlyPayment: z
         .number()
+        .optional()
         .describe(
           'The amount of money that you will have to pay every month to finance a home with the provided values.',
         ),
-      totalAmount: z.number().describe('Total Amount Paid over the loan term.'),
-      totalInterest: z.number().describe('Total Interest Paid over the loan term.'),
+      totalAmount: z.number().optional().describe('Total Amount Paid over the loan term.'),
+      totalInterest: z.number().optional().describe('Total Interest Paid over the loan term.'),
+      status: z.string().optional().describe('Status of the calculation.'),
+      message: z.string().optional().describe('Message about the calculation result.'),
     }),
   },
-  async (input: IInputSchema) => {
+  async (input: IInputSchema, { interrupt, resumed }) => {
+    const resumedData = resumed as { status?: string } | undefined;
+
+    if (resumedData?.status === 'REJECTED') {
+      return { status: 'REJECTED', message: 'The user does not want to run the simulation.' };
+    }
+
+    if (!resumed) {
+      interrupt({
+        message: `I'd like to calculate your mortgage with these values:
+        • Home Price: $${input.homePrice.toLocaleString()}
+        • Down Payment: $${input.downPayment.toLocaleString()}
+        • Loan Term: ${input.loanTerm} years
+        • Interest Rate: ${input.interestRate}%
+        • Zip Code: ${input.zipCode}
+        
+        Do you approve this calculation?`,
+      });
+    }
+
     //! AI Generated Logic
     const { homePrice, downPayment, loanTerm, interestRate } = input;
 
