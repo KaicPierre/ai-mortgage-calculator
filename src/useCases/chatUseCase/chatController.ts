@@ -54,7 +54,6 @@ export class ChatController {
       'Request processed successfully',
     );
 
-    reply.header('x-session-id', result.sessionId);
     return reply.send({
       response: result.response,
       sessionId: result.sessionId,

@@ -31,8 +31,7 @@ const start = async () => {
     );
 
     fastify.register(cors, {
-      origin: '*',
-      exposedHeaders: ['x-session-id'],
+      origin: '*'
     });
     fastify.register(mortgageCalculatorRoutes);
 
